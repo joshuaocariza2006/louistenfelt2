@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Register</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top center, rgba(94, 122, 255, 0.18), transparent 18%),
+                  linear-gradient(180deg, #f3f8ff 0%, #d9e8ff 45%, #d8efff 100%);
+      color: #102347;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(780px, 100%);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 36px;
+      box-shadow: 0 30px 90px rgba(40, 88, 186, 0.12);
+      padding: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: -90px;
+      width: 320px;
+      height: 320px;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(77, 124, 255, 0.16), transparent 58%);
+      pointer-events: none;
+    }
+
+    .header-block {
+      display: grid;
+      gap: 10px;
+      text-align: center;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-block h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 2.5rem);
+      color: #17294f;
+      letter-spacing: -0.04em;
+    }
+
+    .header-block p {
+      margin: 0;
+      color: #52658f;
+      line-height: 1.8;
+      max-width: 660px;
+      justify-self: center;
+    }
+
+    .switcher {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .switcher button {
+      width: 100%;
+      padding: 15px 16px;
+      border: 1px solid rgba(79, 119, 242, 0.2);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.82);
+      color: #2d4776;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.24s ease;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.5);
+    }
+
+    .switcher button.active {
+      background: linear-gradient(90deg, #4b7cdf, #5f8efe);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 18px 32px rgba(68, 105, 244, 0.18);
+    }
+
+    .switcher button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(79, 119, 242, 0.35);
+      background: rgba(79, 119, 242, 0.12);
+    }
+
+    .panel {
+      padding: 28px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,246,255,0.98));
+      border: 1px solid rgba(145, 177, 255, 0.3);
+      box-shadow: 0 10px 40px rgba(59, 95, 207, 0.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel.hidden {
+      display: none;
+    }
+
+    .panel h2 {
+      margin: 0 0 18px;
+      font-size: 1.8rem;
+      color: #143163;
+    }
+
+    .panel p {
+      margin: 0 0 22px;
+      color: #5d6f91;
+      line-height: 1.75;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      font-size: 0.95rem;
+      color: #3f4f74;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border: 1px solid rgba(100, 135, 216, 0.22);
+      border-radius: 16px;
+      font-size: 0.96rem;
+      color: #1f3056;
+      background: rgba(248, 251, 255, 0.96);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: rgba(79, 119, 242, 0.7);
+      box-shadow: 0 0 0 5px rgba(84, 134, 255, 0.16);
+      background: #ffffff;
+      transform: scale(1.01);
+      transition: all 0.2s ease;
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 16px 18px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(90deg, #4f77e3, #5fa0ff);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 14px 24px rgba(79, 119, 242, 0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .submit-button:hover {
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.1);
+      box-shadow: 0 20px 40px rgba(79, 119, 242, 0.3);
+    }
+
+    .submit-button::after {
+      content: '→';
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .submit-button:hover::after {
+      opacity: 1;
+      transform: translateY(-50%) translateX(5px);
+    }
+
+    .messages {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .message {
+      padding: 16px 18px;
+      border-radius: 18px;
+      font-size: 0.96rem;
+      line-height: 1.6;
+      border: 1px solid rgba(255,255,255,0.75);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 28px rgba(77, 122, 255, 0.08);
+      animation: slideIn 0.4s ease;
+    }
+
+    .message.error {
+      background: rgba(255, 246, 246, 0.95);
+      color: #8a242c;
+      border-color: rgba(209, 95, 97, 0.24);
+      animation: shake 0.5s ease;
+    }
+
+    .message.success {
+      background: rgba(237, 250, 238, 0.95);
+      color: #1a5d2f;
+      border-color: rgba(82, 150, 99, 0.28);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .panel form.shake {
+      animation: shake 0.5s ease;
+    }
+
+    .notes {
+      font-size: 0.88rem;
+      color: #6b7b96;
+    }
+
+    @media (max-width: 720px) {
+      .card {
+        padding: 28px;
+      }
+      .switcher {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 16px;
+      }
+      .card {
+        padding: 24px;
+      }
+      .panel {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="header-block">
+        <h1>Welcome Back</h1>
+        <p>Please login with your registered username or email. If you are new here, select Register to create a secure account.</p>
+      </div>
+      <div class="switcher">
+        <button id="loginToggle" class="active" type="button" onclick="showPanel('login')">Login</button>
+        <button id="registerToggle" type="button" onclick="showPanel('register')">Register</button>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="messages">
+            {% for category, message in messages %}
+              <div class="message {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <section id="register-panel" class="panel hidden">
+        <h2>Register</h2>
+        <p>Create a new account and save your details into users.xlsx in the same folder.</p>
+        <form method="post" action="#register">
+          <input type="hidden" name="action" value="register">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="name@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="At least 6 characters" required>
+          </div>
+          <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repeat password" required>
+          </div>
+          <button type="submit" class="submit-button">Register</button>
+        </form>
+      </section>
+
+      <section id="login-panel" class="panel">
+        <h2>Login</h2>
+        <p>Use your registered username or email and password to sign in.</p>
+        <form method="post" action="#login">
+          <input type="hidden" name="action" value="login">
+          <div class="form-group">
+            <label for="username_or_email">Username or Email</label>
+            <input type="text" id="username_or_email" name="username_or_email" placeholder="Username or email" required>
+          </div>
+          <div class="form-group">
+            <label for="password_login">Password</label>
+            <input type="password" id="password_login" name="password" placeholder="Your password" required>
+          </div>
+          <button type="submit" class="submit-button">Login</button>
+        </form>
+        <p class="notes">If login fails, make sure your username/email and password match the registered values.</p>
+      </section>
+    </div>
+  </div>
+  <script>
+    function showPanel(panel) {
+      document.getElementById('login-panel').classList.toggle('hidden', panel !== 'login');
+      document.getElementById('register-panel').classList.toggle('hidden', panel !== 'register');
+      document.getElementById('loginToggle').classList.toggle('active', panel === 'login');
+      document.getElementById('registerToggle').classList.toggle('active', panel === 'register');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'register') {
+        showPanel('register');
+      } else {
+        showPanel('login');
+      }
+
+      // Shake form on error messages
+      const errorMessages = document.querySelectorAll('.message.error');
+      if (errorMessages.length > 0) {
+        const form = errorMessages[0].closest('form');
+        if (form) {
+          form.classList.add('shake');
+          setTimeout(() => form.classList.remove('shake'), 500);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

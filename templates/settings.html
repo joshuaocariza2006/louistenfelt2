@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top center, rgba(79, 114, 214, 0.18), transparent 18%),
+                  linear-gradient(180deg, #edf4ff 0%, #dfe9ff 100%);
+      color: #172b55;
+    }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+    .card {
+      width: min(840px, 100%);
+      background: rgba(255,255,255,0.95);
+      border-radius: 32px;
+      box-shadow: 0 28px 80px rgba(22, 63, 143, 0.14);
+      border: 1px solid rgba(233, 238, 255, 0.95);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 32px;
+      background: linear-gradient(135deg, rgba(79,114,214,0.14), rgba(93,153,255,0.06));
+    }
+    .card-header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: -0.04em;
+    }
+    .card-body {
+      padding: 32px;
+    }
+    .messages {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .message {
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 0.96rem;
+      line-height: 1.6;
+      border: 1px solid rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.88);
+      box-shadow: 0 16px 30px rgba(81, 116, 236, 0.08);
+    }
+    .message.error {
+      background: rgba(255,241,242,0.95);
+      border-color: rgba(219, 97, 101, 0.24);
+      color: #7d2028;
+    }
+    .message.success {
+      background: rgba(237,250,238,0.95);
+      border-color: rgba(94, 150, 100, 0.30);
+      color: #214f30;
+    }
+    .form-grid {
+      display: grid;
+      gap: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #23325f;
+    }
+    input,
+    textarea {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(103, 135, 207, 0.24);
+      background: rgba(248, 251, 255, 0.95);
+      color: #172b55;
+      font-size: 0.96rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: rgba(79, 114, 214, 0.8);
+      box-shadow: 0 0 0 5px rgba(79,114,214,0.12);
+      background: #ffffff;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .button-row button,
+    .button-row a {
+      border: none;
+      outline: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(90deg, #4f75e3, #5fafef);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .button-row button:hover,
+    .button-row a:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+    .subtle {
+      color: #5e7092;
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+    @media (max-width: 720px) {
+      .page { padding: 24px; }
+      .card { border-radius: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="card-header">
+        <h1>Profile Settings</h1>
+      </div>
+      <div class="card-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="messages">
+              {% for category, message in messages %}
+                <div class="message {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="post" action="/settings">
+          <div class="form-grid">
+            <div>
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username" value="{{ user.username }}" required />
+            </div>
+            <div>
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" value="{{ user.email }}" required />
+            </div>
+            <div>
+              <label for="display_name">Display Name</label>
+              <input type="text" id="display_name" name="display_name" value="{{ user.display_name }}" placeholder="How others see you" />
+            </div>
+            <div>
+              <label for="role">Role / Title</label>
+              <input type="text" id="role" name="role" value="{{ user.role }}" placeholder="Moderator, Developer, Creator..." />
+            </div>
+            <div>
+              <label for="likes">Likes</label>
+              <textarea id="likes" name="likes" placeholder="What you enjoy">{{ user.likes }}</textarea>
+            </div>
+            <div>
+              <label for="dislikes">Dislikes</label>
+              <textarea id="dislikes" name="dislikes" placeholder="What you avoid">{{ user.dislikes }}</textarea>
+            </div>
+            <div>
+              <label for="birthday">Birthday</label>
+              <input type="text" id="birthday" name="birthday" value="{{ user.birthday }}" placeholder="e.g. February 3" />
+            </div>
+            <div>
+              <label for="place">Place</label>
+              <input type="text" id="place" name="place" value="{{ user.place }}" placeholder="e.g. Cebu City" />
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <label for="fav_games">Favorite Games</label>
+              <textarea id="fav_games" name="fav_games" placeholder="Your favorite games">{{ user.fav_games }}</textarea>
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <label for="tagline">Profile Tagline</label>
+              <textarea id="tagline" name="tagline" placeholder="A short bio or headline">{{ user.tagline }}</textarea>
+            </div>
+          </div>
+          <div class="button-row">
+            <button type="submit">Save Changes</button>
+            <a href="/homepage">Back to profile</a>
+          </div>
+          <p class="subtle">Your updated display name, role, and tagline will appear on your profile page and in the profile navigation.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
