@@ -144,11 +144,36 @@
       color: #3f4f74;
     }
 
+    /* Password Wrapper Styling */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6487d8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s ease;
+      padding: 4px; /* clickable area */
+    }
+
+    .toggle-password:hover {
+      opacity: 0.7;
+    }
+
     input[type="text"],
     input[type="email"],
     input[type="password"] {
       width: 100%;
       padding: 16px 18px;
+      padding-right: 45px; 
       border: 1px solid rgba(100, 135, 216, 0.22);
       border-radius: 16px;
       font-size: 0.96rem;
@@ -156,6 +181,7 @@
       background: rgba(248, 251, 255, 0.96);
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
       font-family: inherit;
+      box-sizing: border-box;
     }
 
     input[type="text"]:focus,
@@ -169,7 +195,6 @@
       transition: all 0.2s ease;
     }
 
-    /* Remember Me Checkbox Styling */
     .checkbox-group {
       display: flex;
       align-items: center;
@@ -214,37 +239,10 @@
       font-family: inherit;
     }
 
-    .submit-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s ease;
-    }
-
     .submit-button:hover {
       transform: translateY(-2px) scale(1.02);
       filter: brightness(1.1);
       box-shadow: 0 20px 40px rgba(79, 119, 242, 0.3);
-    }
-
-    .submit-button::after {
-      content: '→';
-      position: absolute;
-      right: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.2rem;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .submit-button:hover::after {
-      opacity: 1;
-      transform: translateY(-50%) translateX(5px);
     }
 
     .messages {
@@ -294,30 +292,9 @@
       animation: shake 0.5s ease;
     }
 
-    .notes {
-      font-size: 0.88rem;
-      color: #6b7b96;
-    }
-
     @media (max-width: 720px) {
-      .card {
-        padding: 28px;
-      }
-      .switcher {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .page {
-        padding: 16px;
-      }
-      .card {
-        padding: 24px;
-      }
-      .panel {
-        padding: 22px;
-      }
+      .card { padding: 28px; }
+      .switcher { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -333,27 +310,40 @@
         <button id="registerToggle" type="button" onclick="showPanel('register')">Register</button>
       </div>
       
-      <div class="messages" id="messagesContainer"></div>
+      <div class="messages" id="messagesContainer">
+        {% if error %}
+          <div class="message error">{{ error }}</div>
+        {% endif %}
+      </div>
 
       <section id="register-panel" class="panel hidden">
         <h2>Register</h2>
-        <p>Create a new account with your details.</p>
-        <form id="registerForm" onsubmit="handleRegister(event)">
+        <form id="registerForm" method="POST" action="{{ url_for('register') }}">
           <div class="form-group">
             <label for="reg_username">Username</label>
-            <input type="text" id="reg_username" placeholder="Choose a username" required>
+            <input type="text" id="reg_username" name="reg_username" placeholder="Choose a username" required>
           </div>
           <div class="form-group">
             <label for="reg_email">Email Address</label>
-            <input type="email" id="reg_email" placeholder="name@example.com" required>
+            <input type="email" id="reg_email" name="reg_email" placeholder="name@example.com" required>
           </div>
           <div class="form-group">
             <label for="reg_password">Password</label>
-            <input type="password" id="reg_password" placeholder="At least 6 characters" required>
+            <div class="password-wrapper">
+              <input type="password" id="reg_password" name="reg_password" placeholder="At least 6 characters" required>
+              <span class="toggle-password" onclick="togglePasswordVisibility('reg_password', this)">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+            </div>
           </div>
           <div class="form-group">
             <label for="reg_confirm_password">Confirm Password</label>
-            <input type="password" id="reg_confirm_password" placeholder="Repeat password" required>
+            <div class="password-wrapper">
+              <input type="password" id="reg_confirm_password" name="reg_confirm_password" placeholder="Repeat password" required>
+              <span class="toggle-password" onclick="togglePasswordVisibility('reg_confirm_password', this)">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </span>
+            </div>
           </div>
           <button type="submit" class="submit-button">Register</button>
         </form>
@@ -361,51 +351,44 @@
 
       <section id="login-panel" class="panel">
         <h2>Login</h2>
-        <p>Use your registered username or email and password to sign in.</p>
-        <form id="loginForm" onsubmit="handleLogin(event)">
+        <form id="loginForm" method="POST" action="{{ url_for('auth') }}">
           <div class="form-group">
             <label for="login_username">Username or Email</label>
-            <input type="text" id="login_username" placeholder="Username or email" required>
+            <input type="text" name="username_or_email" id="login_username" placeholder="Username or email" value="{{ remembered_username or '' }}" required>
           </div>
           <div class="form-group">
             <label for="login_password">Password</label>
-            <input type="password" id="login_password" placeholder="Your password" required>
+            <div class="password-wrapper">
+              <input type="password" name="password" id="login_password" placeholder="Your password" required>
+              <span class="toggle-password" onclick="togglePasswordVisibility('login_password', this)">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+            </div>
           </div>
-          
-          <!-- Remember Me Checkbox -->
           <div class="checkbox-group">
             <label class="checkbox-wrapper">
-              <input type="checkbox" id="rememberMe">
-              <span class="checkbox-label">Remember me for next time</span>
+              <input type="checkbox" name="remember_me" id="rememberMe" {% if remembered_username %}checked{% endif %}>
+              <span class="checkbox-label">Remember me</span>
             </label>
           </div>
-
           <button type="submit" class="submit-button">Login</button>
         </form>
-        <p class="notes">If login fails, make sure your username/email and password match the registered values.</p>
       </section>
     </div>
   </div>
 
   <script>
-    // Sample user database (stored in localStorage)
-    const DEFAULT_USERS = [
-      {
-        username: 'joshua',
-        email: 'joshua@gmail.com',
-        password: 'password123'
-      },
-      {
-        username: 'admin',
-        email: 'admin@example.com',
-        password: 'admin123'
-      }
-    ];
+    function togglePasswordVisibility(inputId, element) {
+      const input = document.getElementById(inputId);
+      const eyeOpen = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+      const eyeClosed = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 
-    // Initialize users in localStorage if not already present
-    function initializeUsers() {
-      if (!localStorage.getItem('users')) {
-        localStorage.setItem('users', JSON.stringify(DEFAULT_USERS));
+      if (input.type === "password") {
+        input.type = "text";
+        element.innerHTML = eyeClosed;
+      } else {
+        input.type = "password";
+        element.innerHTML = eyeOpen;
       }
     }
 
@@ -424,177 +407,10 @@
       messageDiv.textContent = message;
       messagesContainer.innerHTML = '';
       messagesContainer.appendChild(messageDiv);
-      
-      // Auto-hide success messages after 2 seconds
-      if (type === 'success') {
-        setTimeout(() => {
-          messageDiv.style.opacity = '0';
-          messageDiv.style.transition = 'opacity 0.3s ease';
-          setTimeout(() => messagesContainer.removeChild(messageDiv), 300);
-        }, 2000);
-      }
+      if (type === 'success') setTimeout(() => messagesContainer.innerHTML = '', 3000);
     }
 
-    function clearMessages() {
-      document.getElementById('messagesContainer').innerHTML = '';
-    }
-
-    // Load remembered credentials on page load
-    function loadRememberedCredentials() {
-      const remembered = localStorage.getItem('rememberedUser');
-      if (remembered) {
-        const { username, password } = JSON.parse(remembered);
-        document.getElementById('login_username').value = username || '';
-        document.getElementById('login_password').value = password || '';
-        document.getElementById('rememberMe').checked = true;
-      }
-    }
-
-    // Save credentials if Remember Me is checked
-    function saveRememberedCredentials(username, password, rememberMe) {
-      if (rememberMe) {
-        localStorage.setItem('rememberedUser', JSON.stringify({ username, password }));
-      } else {
-        localStorage.removeItem('rememberedUser');
-      }
-    }
-
-    function handleLogin(event) {
-      event.preventDefault();
-      
-      const usernameOrEmail = document.getElementById('login_username').value.trim();
-      const password = document.getElementById('login_password').value;
-      const rememberMe = document.getElementById('rememberMe').checked;
-
-      if (!usernameOrEmail || !password) {
-        showMessage('Please fill in all fields', 'error');
-        return;
-      }
-
-      // Get users from localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      
-      // Find user by username or email
-      const user = users.find(u => 
-        u.username === usernameOrEmail || u.email === usernameOrEmail
-      );
-
-      if (!user) {
-        showMessage('❌ Username or email not found. Please register first.', 'error');
-        document.getElementById('loginForm').classList.add('shake');
-        setTimeout(() => document.getElementById('loginForm').classList.remove('shake'), 500);
-        return;
-      }
-
-      if (user.password !== password) {
-        showMessage('❌ Incorrect password. Please try again.', 'error');
-        document.getElementById('loginForm').classList.add('shake');
-        setTimeout(() => document.getElementById('loginForm').classList.remove('shake'), 500);
-        return;
-      }
-
-      // Save credentials if Remember Me is checked
-      saveRememberedCredentials(usernameOrEmail, password, rememberMe);
-
-      // Login successful
-      showMessage('✓ Login successful! Redirecting...', 'success');
-      
-      // Store login session
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('currentUser', user.username);
-      localStorage.setItem('currentUserEmail', user.email);
-      
-      // Redirect to profile page after 1.5 seconds
-      setTimeout(() => {
-        window.location.href = 'profile.html';
-      }, 1500);
-    }
-
-    function handleRegister(event) {
-      event.preventDefault();
-
-      const username = document.getElementById('reg_username').value.trim();
-      const email = document.getElementById('reg_email').value.trim();
-      const password = document.getElementById('reg_password').value;
-      const confirmPassword = document.getElementById('reg_confirm_password').value;
-
-      // Validation
-      if (!username || !email || !password || !confirmPassword) {
-        showMessage('Please fill in all fields', 'error');
-        return;
-      }
-
-      if (username.length < 3) {
-        showMessage('Username must be at least 3 characters long', 'error');
-        return;
-      }
-
-      if (password.length < 6) {
-        showMessage('Password must be at least 6 characters long', 'error');
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        showMessage('Passwords do not match', 'error');
-        return;
-      }
-
-      // Get existing users
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-      // Check if username or email already exists
-      if (users.some(u => u.username === username)) {
-        showMessage('❌ Username already exists. Please choose another.', 'error');
-        return;
-      }
-
-      if (users.some(u => u.email === email)) {
-        showMessage('❌ Email already registered. Please use another email.', 'error');
-        return;
-      }
-
-      // Add new user
-      users.push({
-        username: username,
-        email: email,
-        password: password
-      });
-
-      // Save to localStorage
-      localStorage.setItem('users', JSON.stringify(users));
-
-      showMessage('✓ Registration successful! Please login with your credentials.', 'success');
-
-      // Clear form
-      document.getElementById('registerForm').reset();
-
-      // Switch to login panel
-      setTimeout(() => {
-        showPanel('login');
-      }, 2000);
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeUsers();
-
-      // Check if already logged in
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
-      if (isLoggedIn === 'true') {
-        window.location.href = 'profile.html';
-      }
-
-      // Load remembered credentials
-      loadRememberedCredentials();
-
-      // Restore panel state from URL hash
-      const hash = window.location.hash.replace('#', '');
-      if (hash === 'register') {
-        showPanel('register');
-      } else {
-        showPanel('login');
-      }
-    });
+    function clearMessages() { document.getElementById('messagesContainer').innerHTML = ''; }
   </script>
 </body>
 </html>
