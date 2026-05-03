@@ -508,17 +508,22 @@ button {
   font-weight: 600;
   color: #2a4470;
 }
-.availability-card {
-  display: grid;
-  gap: 14px;
-  padding: 28px;
+.qr-card-item a.qr-redirect-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #4f75e3, #5fafef);
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
-.availability-card h3 {
-  margin-bottom: 10px;
-}
-.availability-card p {
-  color: var(--muted);
-  font-size: 0.95rem;
+.qr-card-item a.qr-redirect-button:hover {
+  filter: brightness(1.08);
 }
 .members-container {
   display: flex;
@@ -813,7 +818,7 @@ button {
         </div>
         <div class="user-dropdown">
           <button type="button" class="user-chip" onclick="toggleUserMenu(event)" aria-haspopup="true" aria-expanded="false">
-            <img src="/images/placeholder-image.png" alt="Profile avatar">
+            <img src="{{ user.avatar_url or '/images/placeholder-image.png' }}" alt="Profile avatar">
             <div>
               <strong>{{ user.display_name or user.username }}</strong>
               <span>{{ user.role or 'Visitor' }}</span>
@@ -833,10 +838,10 @@ button {
     <section id="profile" class="tab">
       <div class="profile-layout">
         <article class="card profile-card">
-          <div class="role-pill">{{ user.role or 'Moderator' }}</div>
+          <div class="role-pill">{{ user.role or 'Visitor' }}</div>
           <div class="avatar-frame">
             <div class="avatar-wrap">
-              <img src="/images/placeholder-image.png" alt="Profile picture">
+              <img src="{{ user.avatar_url or '/images/placeholder-image.png' }}" alt="Profile picture">
             </div>
           </div>
           <h1>{{ user.display_name or user.username }}</h1>
@@ -845,9 +850,9 @@ button {
 
         <div class="card-column">
           <article class="card small-card">
-            <h3>Moderator's Team</h3>
-            <p><strong>Joshua</strong> &bull; He / Him<br>Co-Helper</p>
-            <p style="margin-top: 12px;"><strong>20</strong></p>
+            <h3>Basic Information</h3>
+            <p><strong>{{ user.team_member_name or 'Website Visitor' }}</strong> &bull; {{ user.team_member_pronouns or 'Not set' }}<br>{{ user.team_member_role or 'Visitor' }}</p>
+            <p style="margin-top: 12px;"><strong>{{ user.team_member_count or '0' }}</strong></p>
           </article>
           <article class="card small-card">
             <h3>Likes</h3>
@@ -870,23 +875,21 @@ button {
             </div>
             <div class="qr-grid">
               <div class="qr-card-item">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://youtube.com" alt="YouTube QR">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ (user.youtube_url or 'https://youtube.com') | urlencode }}" alt="YouTube QR">
                 <span>YouTube</span>
+                <a class="qr-redirect-button" href="{{ user.youtube_url or 'https://youtube.com' }}" target="_blank" rel="noopener noreferrer">Go to YouTube</a>
               </div>
               <div class="qr-card-item">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://tiktok.com" alt="TikTok QR">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ (user.tiktok_url or 'https://tiktok.com') | urlencode }}" alt="TikTok QR">
                 <span>TikTok</span>
+                <a class="qr-redirect-button" href="{{ user.tiktok_url or 'https://tiktok.com' }}" target="_blank" rel="noopener noreferrer">Go to TikTok</a>
               </div>
               <div class="qr-card-item">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://facebook.com" alt="Facebook QR">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ (user.facebook_url or 'https://facebook.com') | urlencode }}" alt="Facebook QR">
                 <span>Facebook</span>
+                <a class="qr-redirect-button" href="{{ user.facebook_url or 'https://facebook.com' }}" target="_blank" rel="noopener noreferrer">Go to Facebook</a>
               </div>
             </div>
-          </article>
-          <article class="card availability-card">
-            <h3>Availability</h3>
-            <p><strong>Summer Schedule</strong><br>7:30 PM – 1 / 2 AM (all days)</p>
-            <p style="margin-top: 16px;"><strong>School Days (Monday to Friday)</strong><br>Morning: 7:30 AM – 8:00 AM<br>Afternoon: 1:30 AM – 12:00 PM</p>
           </article>
         </div>
       </div>
@@ -897,35 +900,35 @@ button {
     <section id="members" class="tab hidden">
       <div class="members-container">
         <div class="members-grid-top">
-          <!-- JOSHUA -->
-          <article class="member-card selected" data-member-id="joshua" data-name="Joshua" data-role="Moderator" data-description="Bot Developer & Programmer" data-bio="A passionate developer who loves creating amazing bots and programming solutions." data-likes="Building bots, mentoring new members, and solving community problems." data-dislikes="Inactivity, unresolved issues, and unclear communication." data-birthday="February 3" data-place="Cebu City" data-games="Genshin, Roblox, MLBB, Left 4 Dead" data-image="/images/profile-pic.png" data-youtube="https://www.youtube.com/@JoshuaTech" data-tiktok="https://www.tiktok.com/@joshua_dev" data-facebook="https://www.facebook.com/joshua.developer" onclick="selectMember(this)">
+          <!-- BLUEBELLTRESS - OWNER -->
+          <article class="member-card selected" data-member-id="bluebelltress" data-name="Bluebelltress" data-role="Owner" data-description="Server Owner and Founder of Loustenfelt" data-bio="Visionary leader who founded and manages the Loustenfelt community with care." data-likes="Community building, creative events, listening to members." data-dislikes="Negativity, drama, lack of inclusivity." data-birthday="November 8" data-place="Davao" data-games="Minecraft, Sims, Stardew Valley" data-image="/images/profile-pic3.png" data-youtube="https://www.youtube.com/@BluebellTress" data-tiktok="https://www.tiktok.com/@bluebelltress_official" data-facebook="https://www.facebook.com/bluebelltress.founder" onclick="selectMember(this)">
+            <img src="/images/profile-pic3.png" alt="Bluebelltress">
+            <h4>Bluebelltress</h4>
+            <p>Owner</p>
+          </article>
+
+          <!-- JOSHUA - MODERATOR -->
+          <article class="member-card" data-member-id="joshua" data-name="Joshua" data-role="Moderator" data-description="Bot Developer & Programmer" data-bio="A passionate developer who loves creating amazing bots and programming solutions." data-likes="Building bots, mentoring new members, and solving community problems." data-dislikes="Inactivity, unresolved issues, and unclear communication." data-birthday="February 3" data-place="Cebu City" data-games="Genshin, Roblox, MLBB, Left 4 Dead" data-image="/images/profile-pic.png" data-youtube="https://www.youtube.com/@JoshuaTech" data-tiktok="https://www.tiktok.com/@joshua_dev" data-facebook="https://www.facebook.com/joshua.developer" onclick="selectMember(this)">
             <img src="/images/profile-pic.png" alt="Joshua">
             <h4>Joshua</h4>
             <p>Moderator</p>
           </article>
 
-          <!-- CELD -->
+          <!-- CELD - MODERATOR -->
           <article class="member-card" data-member-id="celd" data-name="Celd" data-role="Moderator" data-description="Technical Support" data-bio="Dedicated to helping community members with technical issues and troubleshooting." data-likes="Problem-solving, helping others, system optimization." data-dislikes="Ignored tickets, rushed solutions, technical debt." data-birthday="May 15" data-place="Manila" data-games="Roblox, CS:GO, Among Us" data-image="/images/profile-pic2.png" data-youtube="https://www.youtube.com/@CeldSupport" data-tiktok="https://www.tiktok.com/@celd_tech" data-facebook="https://www.facebook.com/celd.support" onclick="selectMember(this)">
             <img src="/images/profile-pic2.png" alt="Celd">
             <h4>Celd</h4>
             <p>Moderator</p>
           </article>
 
-          <!-- BLUEBELLTRESS -->
-          <article class="member-card" data-member-id="bluebelltress" data-name="Bluebelltress" data-role="Owner" data-description="Server Owner and Founder of Loustenfelt" data-bio="Visionary leader who founded and manages the Loustenfelt community with care." data-likes="Community building, creative events, listening to members." data-dislikes="Negativity, drama, lack of inclusivity." data-birthday="November 8" data-place="Davao" data-games="Minecraft, Sims, Stardew Valley" data-image="/images/profile-pic3.png" data-youtube="https://www.youtube.com/@BluebellTress" data-tiktok="https://www.tiktok.com/@bluebelltress_official" data-facebook="https://www.facebook.com/bluebelltress.founder" onclick="selectMember(this)">
-            <img src="/images/profile-pic3.png" alt="Bluebelltress">
-            <h4>Bluebelltress</h4>
-            <p>Owner</p>
-          </article>
-
-          <!-- BLIZZ -->
+          <!-- BLIZZ - GUIDANCE COUNSELOR -->
           <article class="member-card" data-member-id="blizz" data-name="Blizz" data-role="Guidance Counselor" data-description="Strategic operations lead" data-bio="Provides strategic guidance and mentorship to community members and team." data-likes="Mentoring, strategic planning, team collaboration." data-dislikes="Micromanagement, poor planning, lack of vision." data-birthday="July 20" data-place="Quezon City" data-games="Valorant, League of Legends, Overwatch" data-image="/images/profile-pic5.png" data-youtube="https://www.youtube.com/@BlizzGaming" data-tiktok="https://www.tiktok.com/@blizz_mentor" data-facebook="https://www.facebook.com/blizz.strategic" onclick="selectMember(this)">
             <img src="/images/profile-pic5.png" alt="Blizz">
             <h4>Blizz</h4>
             <p>Guidance Counselor</p>
           </article>
 
-          <!-- ICARUSS -->
+          <!-- ICARUSS - GUIDANCE COUNSELOR -->
           <article class="member-card" data-member-id="icaruss" data-name="Icaruss" data-role="Guidance Counselor" data-description="Community support specialist" data-bio="Ensures community harmony and provides support to all members." data-likes="Supporting members, creating safe spaces, engagement." data-dislikes="Conflict without resolution, silent communities, exclusion." data-birthday="January 21" data-place="Makati" data-games="Genshin Impact, Honkai, Animal Crossing" data-image="/images/profile-pic4.png" data-youtube="https://www.youtube.com/@IcarussGaming" data-tiktok="https://www.tiktok.com/@icaruss_community" data-facebook="https://www.facebook.com/icaruss.support" onclick="selectMember(this)">
             <img src="/images/profile-pic4.png" alt="Icaruss">
             <h4>Icaruss</h4>
@@ -936,13 +939,13 @@ button {
           <div class="member-detail-layout">
             <div class="member-detail-card card">
               <div class="member-detail-content">
-                <img id="detailImage" src="/images/profile-pic.png" alt="Member" class="detail-avatar">
+                <img id="detailImage" src="/images/profile-pic3.png" alt="Member" class="detail-avatar">
                 <div class="detail-info">
-                  <h2 id="detailName">Joshua</h2>
-                  <p id="detailRole" class="detail-role">Moderator</p>
-                  <p id="detailDescription" class="detail-description">Bot Developer & Programmer</p>
+                  <h2 id="detailName">Bluebelltress</h2>
+                  <p id="detailRole" class="detail-role">Owner</p>
+                  <p id="detailDescription" class="detail-description">Server Owner and Founder of Loustenfelt</p>
                   <div class="detail-divider"></div>
-                  <p id="detailBio" class="detail-bio">A passionate developer who loves creating amazing bots and programming solutions.</p>
+                  <p id="detailBio" class="detail-bio">Visionary leader who founded and manages the Loustenfelt community with care.</p>
                   <div class="detail-footer">
                     <span class="detail-label">Member since:</span> <span>2024</span>
                   </div>
@@ -972,14 +975,17 @@ button {
                   <div class="qr-card-item">
                     <img id="qr-youtube" src="" alt="YouTube QR">
                     <span>YouTube</span>
+                    <a id="qr-youtube-link" class="qr-redirect-button" href="#" target="_blank" rel="noopener noreferrer">Go to YouTube</a>
                   </div>
                   <div class="qr-card-item">
                     <img id="qr-tiktok" src="" alt="TikTok QR">
                     <span>TikTok</span>
+                    <a id="qr-tiktok-link" class="qr-redirect-button" href="#" target="_blank" rel="noopener noreferrer">Go to TikTok</a>
                   </div>
                   <div class="qr-card-item">
                     <img id="qr-facebook" src="" alt="Facebook QR">
                     <span>Facebook</span>
+                    <a id="qr-facebook-link" class="qr-redirect-button" href="#" target="_blank" rel="noopener noreferrer">Go to Facebook</a>
                   </div>
                 </div>
               </article>
@@ -1060,13 +1066,20 @@ function selectMember(card) {
 }
 
 function updateMemberQRCodes(youtubeUrl, tiktokUrl, facebookUrl) {
-  const youtubeQR = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(youtubeUrl)}`;
-  const tiktokQR = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(tiktokUrl)}`;
-  const facebookQR = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(facebookUrl)}`;
+  const youtubeUrlSafe = youtubeUrl || 'https://youtube.com';
+  const tiktokUrlSafe = tiktokUrl || 'https://tiktok.com';
+  const facebookUrlSafe = facebookUrl || 'https://facebook.com';
+  const youtubeQR = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(youtubeUrlSafe)}`;
+  const tiktokQR = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(tiktokUrlSafe)}`;
+  const facebookQR = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(facebookUrlSafe)}`;
   
   document.getElementById('qr-youtube').src = youtubeQR;
   document.getElementById('qr-tiktok').src = tiktokQR;
   document.getElementById('qr-facebook').src = facebookQR;
+  
+  document.getElementById('qr-youtube-link').href = youtubeUrlSafe;
+  document.getElementById('qr-tiktok-link').href = tiktokUrlSafe;
+  document.getElementById('qr-facebook-link').href = facebookUrlSafe;
 }
 
 // Initialize first member on page load
