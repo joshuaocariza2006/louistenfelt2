@@ -153,15 +153,15 @@
           {% endif %}
         {% endwith %}
 
-        <form method="post" action="/settings">
+        <form method="post" action="/settings" enctype="multipart/form-data">
           <div class="form-grid">
             <div>
               <label for="username">Username</label>
-              <input type="text" id="username" name="username" value="{{ user.username }}" required />
+              <input type="text" id="username" name="username" value="{{ user.username }}" required disabled />
             </div>
             <div>
               <label for="email">Email Address</label>
-              <input type="email" id="email" name="email" value="{{ user.email }}" required />
+              <input type="email" id="email" name="email" value="{{ user.email }}" required disabled />
             </div>
             <div>
               <label for="display_name">Display Name</label>
@@ -169,9 +169,44 @@
             </div>
             <div>
               <label for="role">Role / Title</label>
-              <input type="text" id="role" name="role" value="{{ user.role }}" placeholder="Moderator, Developer, Creator..." />
+              <input type="text" id="role" name="role" value="{{ user.role }}" placeholder="Moderator, Developer, Creator..." disabled />
             </div>
             <div>
+              <label for="avatar_file">Upload Avatar Image</label>
+              <input type="file" id="avatar_file" name="avatar_file" accept="image/png, image/jpeg" />
+            </div>
+            <div>
+              <label for="youtube_url">YouTube Profile URL</label>
+              <input type="url" id="youtube_url" name="youtube_url" value="{{ user.youtube_url }}" placeholder="https://www.youtube.com/@yourprofile" />
+            </div>
+            <div>
+              <label for="tiktok_url">TikTok Profile URL</label>
+              <input type="url" id="tiktok_url" name="tiktok_url" value="{{ user.tiktok_url }}" placeholder="https://www.tiktok.com/@yourprofile" />
+            </div>
+            <div>
+              <label for="facebook_url">Facebook Profile URL</label>
+              <input type="url" id="facebook_url" name="facebook_url" value="{{ user.facebook_url }}" placeholder="https://www.facebook.com/yourprofile" />
+            </div>
+            <div style="grid-column: 1 / -1; border-top: 1px solid rgba(79,114,214,0.1); padding-top: 20px; margin-top: 10px;">
+              <h3 style="margin: 0 0 16px; color: #1f3f8f; font-size: 1.1rem;">Visitor's Personal Information </h3>
+            </div>
+            <div>
+              <label for="team_member_name">Team Member Name</label>
+              <input type="text" id="team_member_name" name="team_member_name" value="{{ user.team_member_name }}" placeholder="e.g. Joshua" />
+            </div>
+            <div>
+              <label for="team_member_pronouns">Pronouns</label>
+              <input type="text" id="team_member_pronouns" name="team_member_pronouns" value="{{ user.team_member_pronouns }}" placeholder="e.g. He / Him" />
+            </div>
+            <div>
+              <label for="team_member_role">Team Role</label>
+              <input type="text" id="team_member_role" name="team_member_role" value="{{ user.team_member_role }}" placeholder="e.g. Co-Helper" disabled />
+            </div>
+            <div>
+              <label for="team_member_count">Age</label>
+              <input type="number" id="team_member_count" name="team_member_count" value="{{ user.team_member_count }}" placeholder="e.g. 20" />
+            </div>
+            <div style="grid-column: 1 / -1;">
               <label for="likes">Likes</label>
               <textarea id="likes" name="likes" placeholder="What you enjoy">{{ user.likes }}</textarea>
             </div>
